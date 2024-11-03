@@ -3,11 +3,10 @@ pipeline {
 
     environment {
         IMAGE_TAG = "$BUILD_NUMBER"
-        DOCKERHUB_USERNAME = "aakkiiff" 
+        dockerhub_credential_id = "dockerhub"
+        APP_NAME = "demo_frontend"
         GIT_REPO = "https://github.com/aakkiiff/ci_cd_demo.git"
-        CLIENT_APP_NAME = "demo_frontend"
-        CLIENT_APP_IMAGE = "${DOCKERHUB_USERNAME}/${CLIENT_APP_NAME}"
-        CONFIG_PROJECT_NAME = "demo_config"
+        UPSTRING_CONFIG_PROJECT_NAME = "demo_config"
      }
     triggers {
         githubPush()
@@ -28,21 +27,14 @@ pipeline {
             }
         }
 
-        stage("BUILD DOCKER IMAGES"){
-            steps{
-                sh'docker build --no-cache -t ${CLIENT_APP_IMAGE}:${IMAGE_TAG} -t ${CLIENT_APP_IMAGE}:latest .'   
-            }
-        }
 
-        stage("PUSH DOCKER IMAGES TO DOCKERHUB"){
+
+        stage("BUILD+PUSH DOCKER IMAGES TO DOCKERHUB"){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USER_NAME')]) {
-
+                    sh'docker build --no-cache -t ${USER_NAME}/${APP_NAME}:${IMAGE_TAG} .'   
                     sh'echo ${PASSWORD} | docker login --username ${USER_NAME} --password-stdin'
-
-                    sh'docker push ${CLIENT_APP_IMAGE}:${IMAGE_TAG}'
-                    sh'docker push ${CLIENT_APP_IMAGE}:latest'
-
+                    sh'docker push ${USER_NAME}/${APP_NAME}:${IMAGE_TAG}'
                     sh'docker logout'
                 }
             }
@@ -50,7 +42,7 @@ pipeline {
 
         stage("TRIGGERING THE CONFIG PIPELINE"){
             steps{
-                build job: 'demo_config', parameters: [string(name: 'IMAGE_TAG', value: env.IMAGE_TAG)]
+                build job: env.UPSTRING_CONFIG_PROJECT_NAME, parameters: [string(name: 'IMAGE_TAG', value: env.IMAGE_TAG)]
             }
         }
         
