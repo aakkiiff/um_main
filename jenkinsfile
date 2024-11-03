@@ -9,7 +9,10 @@ pipeline {
         CLIENT_APP_IMAGE = "${DOCKERHUB_USERNAME}/${CLIENT_APP_NAME}"
         CONFIG_PROJECT_NAME = "demo_config"
      }
-     
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('CLEANUP WORKSPACE'){
             steps{
