@@ -49,4 +49,4 @@ export default tseslint.config({
 })
 ```
 # um
-#new featureff
+#new featureffs
