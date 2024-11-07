@@ -4,9 +4,9 @@ pipeline {
     environment {
         IMAGE_TAG = "$BUILD_NUMBER"
         dockerhub_credential_id = "dockerhub"
-        APP_NAME = "demo_frontend"
+        APP_NAME = "yourmentors_fe"
         GIT_REPO = "https://github.com/aakkiiff/ci_cd_demo.git"
-        UPSTRING_CONFIG_PROJECT_NAME = "demo_config"
+        UPSTRING_CONFIG_PROJECT_NAME = "config_pipeline"
      }
     triggers {
         githubPush()
