@@ -10,6 +10,7 @@ pipeline {
      }
     triggers {
         githubPush()
+        // $JENKINS_BASE_URL/github-webhook/
     }
 
     stages {
